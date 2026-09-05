@@ -1,0 +1,101 @@
+:root {
+  --bg: #0b1f18;
+  --card: #122a22;
+  --text: #eef6f1;
+  --muted: #9bb5a8;
+  --accent: #2f9e6c;
+  --accent-2: #1d6b4a;
+  --danger: #dc2626;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  width: 320px;
+  background: radial-gradient(120% 100% at 0% 0%, #16382c 0%, var(--bg) 55%);
+  color: var(--text);
+  font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+}
+
+.popup { padding: 14px; display: grid; gap: 10px; }
+
+.popup__header { margin-bottom: 2px; }
+.popup__brand {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.popup__sub { color: var(--muted); font-size: 12px; }
+
+.popup__card {
+  background: color-mix(in srgb, var(--card) 92%, white 8%);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.popup__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.popup__input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.popup__row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.popup__muted { margin: 0; color: var(--muted); font-size: 12px; }
+.popup__msg { margin: 0; font-size: 12px; }
+.popup__msg.is-error { color: #fecaca; }
+.popup__msg.is-ok { color: #bbf7d0; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge--on { background: rgba(47, 158, 108, 0.25); color: #86efac; }
+.badge--off { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+
+.btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.btn--primary {
+  background: linear-gradient(145deg, var(--accent), var(--accent-2));
+  color: white;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.popup__footer {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}

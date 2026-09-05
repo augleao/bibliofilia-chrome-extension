@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Bibliofilia — Cartosoft OS",
+  "description": "Importa Ordens de Serviço do CartosoftWeb para o Bibliofilia. Arquitetura extensível para protocolo e recibo.",
+  "version": "1.0.0",
+  "action": {
+    "default_title": "Bibliofilia",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://cartosoftweb.recivil.com.br/*",
+        "https://*.recivil.com.br/*/ordem-de-servico/*",
+        "https://*.recivil.com.br/cartosoft-web/*"
+      ],
+      "js": [
+        "shared/config.js",
+        "shared/messages.js",
+        "shared/url.js",
+        "actions/registry.js",
+        "actions/importOs.js",
+        "content/fab.js",
+        "content/content.js"
+      ],
+      "css": ["content/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://cartosoftweb.recivil.com.br/*",
+    "https://*.recivil.com.br/*",
+    "https://backend-goby.onrender.com/*",
+    "https://backend-dev-ypsu.onrender.com/*",
+    "http://localhost:3001/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://www.bibliofilia.com.br/*",
+      "https://frontend-0f8x.onrender.com/*",
+      "https://frontend-dev-e7yt.onrender.com/*",
+      "http://localhost:3000/*"
+    ]
+  }
+}
