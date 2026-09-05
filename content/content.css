@@ -1,0 +1,92 @@
+#bibliofilia-fab-host {
+  position: fixed;
+  z-index: 2147483646;
+  right: 16px;
+  bottom: 24px;
+  left: auto;
+  top: auto;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  pointer-events: none;
+}
+
+#bibliofilia-fab-host.is-dragging {
+  cursor: grabbing;
+}
+
+.bibliofilia-fab {
+  pointer-events: auto;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #0f3d2e 0%, #1a6b4a 55%, #0b2a1f 100%);
+  color: #f4f7f5;
+  box-shadow: 0 8px 24px rgba(11, 42, 31, 0.35);
+  cursor: grab;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+
+.bibliofilia-fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 28px rgba(11, 42, 31, 0.45);
+}
+
+.bibliofilia-fab:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.bibliofilia-fab__glyph {
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.bibliofilia-fab.is-loading {
+  background: linear-gradient(145deg, #334155, #64748b);
+  animation: bibliofilia-pulse 1s ease-in-out infinite;
+}
+
+.bibliofilia-fab.is-success {
+  background: linear-gradient(145deg, #166534, #22c55e);
+}
+
+.bibliofilia-fab.is-error {
+  background: linear-gradient(145deg, #7f1d1d, #dc2626);
+}
+
+.bibliofilia-fab-toast {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  min-width: 180px;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  font-size: 12px;
+  line-height: 1.35;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.bibliofilia-fab-toast[data-kind="success"] {
+  background: rgba(22, 101, 52, 0.95);
+}
+
+.bibliofilia-fab-toast[data-kind="error"] {
+  background: rgba(153, 27, 27, 0.95);
+}
+
+.bibliofilia-fab-toast[data-kind="loading"] {
+  background: rgba(51, 65, 85, 0.95);
+}
+
+@keyframes bibliofilia-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

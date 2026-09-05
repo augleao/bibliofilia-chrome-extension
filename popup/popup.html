@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bibliofilia</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="popup">
+    <header class="popup__header">
+      <div class="popup__brand">Bibliofilia</div>
+      <div class="popup__sub">Extensão Cartosoft OS</div>
+    </header>
+
+    <section class="popup__card">
+      <label class="popup__label" for="apiEnv">Ambiente da API</label>
+      <select id="apiEnv" class="popup__input">
+        <option value="prod">Produção</option>
+        <option value="dev">Desenvolvimento</option>
+        <option value="local">Local (localhost:3001)</option>
+      </select>
+    </section>
+
+    <section id="statusCard" class="popup__card">
+      <div class="popup__row">
+        <span class="popup__label">Status</span>
+        <span id="linkBadge" class="badge badge--off">Não vinculada</span>
+      </div>
+      <p id="userLine" class="popup__muted">Gere um código no Admin do Bibliofilia e cole abaixo.</p>
+      <p id="syncLine" class="popup__muted"></p>
+    </section>
+
+    <section id="pairSection" class="popup__card">
+      <label class="popup__label" for="pairCode">Código de vínculo</label>
+      <div class="popup__row">
+        <input id="pairCode" class="popup__input" maxlength="12" placeholder="Ex.: AB12CD34" autocomplete="off" />
+        <button id="pairBtn" class="btn btn--primary" type="button">Vincular</button>
+      </div>
+      <p id="pairMsg" class="popup__msg" hidden></p>
+    </section>
+
+    <section id="linkedSection" class="popup__card" hidden>
+      <button id="disconnectBtn" class="btn btn--ghost" type="button">Desvincular extensão</button>
+    </section>
+
+    <footer class="popup__footer">
+      Nas páginas de edição de OS do Cartosoft, use o botão flutuante <strong>B</strong> para importar.
+    </footer>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
