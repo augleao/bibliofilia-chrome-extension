@@ -1,12 +1,20 @@
 /**
  * FAB arrastável com posição persistida em chrome.storage.local.
+ * Usa Shadow DOM + estilos !important para não ser escondido pelo CSS do Cartosoft.
  */
 (function (root) {
   const HOST_ID = 'bibliofilia-fab-host';
-  const STORAGE_KEY = (root.BibliofiliaConfig && root.BibliofiliaConfig.STORAGE_KEYS.fabPosition) || 'fabPosition';
+  const STORAGE_KEY =
+    (root.BibliofiliaConfig && root.BibliofiliaConfig.STORAGE_KEYS.fabPosition) || 'fabPosition';
 
   function clamp(n, min, max) {
     return Math.max(min, Math.min(max, n));
+  }
+
+  function setImportant(el, styles) {
+    Object.keys(styles).forEach((key) => {
+      el.style.setProperty(key, styles[key], 'important');
+    });
   }
 
   async function loadPosition() {
@@ -26,29 +34,122 @@
     }
   }
 
+  function applyHostShellStyle(host) {
+    setImportant(host, {
+      position: 'fixed',
+      'z-index': '2147483647',
+      right: '16px',
+      bottom: '24px',
+      left: 'auto',
+      top: 'auto',
+      width: '56px',
+      height: '56px',
+      margin: '0',
+      padding: '0',
+      border: '0',
+      background: 'transparent',
+      'pointer-events': 'none',
+      display: 'block',
+      visibility: 'visible',
+      opacity: '1',
+      overflow: 'visible',
+      transform: 'none',
+      'clip-path': 'none',
+      filter: 'none',
+    });
+  }
+
+  function ensureParent(host) {
+    const parent = document.body || document.documentElement;
+    if (!parent) return false;
+    if (host.parentNode !== parent) parent.appendChild(host);
+    return true;
+  }
+
   function createFab({ onClick, onStatus } = {}) {
-    if (document.getElementById(HOST_ID)) {
-      return document.getElementById(HOST_ID);
+    const existing = document.getElementById(HOST_ID);
+    if (existing) {
+      applyHostShellStyle(existing);
+      ensureParent(existing);
+      return existing;
     }
 
     const host = document.createElement('div');
     host.id = HOST_ID;
     host.setAttribute('data-bibliofilia', 'fab');
+    applyHostShellStyle(host);
+
+    const shadow = host.attachShadow({ mode: 'open' });
+    const style = document.createElement('style');
+    style.textContent = `
+      .wrap {
+        position: relative;
+        width: 56px;
+        height: 56px;
+        pointer-events: none;
+        font-family: "Segoe UI", system-ui, sans-serif;
+      }
+      .fab {
+        pointer-events: auto;
+        width: 56px;
+        height: 56px;
+        border: 0;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #0f3d2e 0%, #1a6b4a 55%, #0b2a1f 100%);
+        color: #f4f7f5;
+        box-shadow: 0 8px 24px rgba(11, 42, 31, 0.45);
+        cursor: grab;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 1;
+        padding: 0;
+      }
+      .fab.is-loading { background: linear-gradient(145deg, #334155, #64748b); }
+      .fab.is-success { background: linear-gradient(145deg, #166534, #22c55e); }
+      .fab.is-error { background: linear-gradient(145deg, #7f1d1d, #dc2626); }
+      .toast {
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 10px);
+        min-width: 180px;
+        max-width: 260px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(15, 23, 42, 0.92);
+        color: #f8fafc;
+        font-size: 12px;
+        line-height: 1.35;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      }
+      .toast[hidden] { display: none !important; }
+    `;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'wrap';
 
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'bibliofilia-fab';
+    btn.className = 'fab';
     btn.setAttribute('aria-label', 'Bibliofilia — Importar OS');
     btn.title = 'Importar OS no Bibliofilia';
-    btn.innerHTML = '<span class="bibliofilia-fab__glyph">B</span>';
+    btn.textContent = 'B';
 
     const toast = document.createElement('div');
-    toast.className = 'bibliofilia-fab-toast';
+    toast.className = 'toast';
     toast.hidden = true;
 
-    host.appendChild(btn);
-    host.appendChild(toast);
-    document.documentElement.appendChild(host);
+    wrap.appendChild(btn);
+    wrap.appendChild(toast);
+    shadow.appendChild(style);
+    shadow.appendChild(wrap);
+
+    if (!ensureParent(host)) {
+      console.warn('[Bibliofilia] FAB: document ainda sem body/html');
+      return null;
+    }
 
     let dragging = false;
     let moved = false;
@@ -75,14 +176,16 @@
 
     function applyPosition(pos) {
       const margin = 12;
-      const w = btn.offsetWidth || 56;
-      const h = btn.offsetHeight || 56;
-      const left = clamp(pos.left, margin, window.innerWidth - w - margin);
-      const top = clamp(pos.top, margin, window.innerHeight - h - margin);
-      host.style.left = `${left}px`;
-      host.style.top = `${top}px`;
-      host.style.right = 'auto';
-      host.style.bottom = 'auto';
+      const w = 56;
+      const h = 56;
+      const left = clamp(Number(pos.left) || 0, margin, window.innerWidth - w - margin);
+      const top = clamp(Number(pos.top) || 0, margin, window.innerHeight - h - margin);
+      setImportant(host, {
+        left: `${left}px`,
+        top: `${top}px`,
+        right: 'auto',
+        bottom: 'auto',
+      });
       return { left, top };
     }
 
@@ -107,7 +210,6 @@
       originLeft = rect.left;
       originTop = rect.top;
       btn.setPointerCapture(ev.pointerId);
-      host.classList.add('is-dragging');
     });
 
     btn.addEventListener('pointermove', (ev) => {
@@ -121,7 +223,6 @@
     btn.addEventListener('pointerup', async (ev) => {
       if (!dragging) return;
       dragging = false;
-      host.classList.remove('is-dragging');
       try {
         btn.releasePointerCapture(ev.pointerId);
       } catch (_) {
@@ -140,6 +241,10 @@
     });
 
     host.setStatus = setStatus;
+    console.log('[Bibliofilia] FAB montado', {
+      href: location.href,
+      frame: window === window.top ? 'top' : 'iframe',
+    });
     return host;
   }
 

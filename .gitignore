@@ -1,5 +1,10 @@
 .git/
 node_modules/
 dist/
+build/
 .DS_Store
 *.log
+
+# Chave privada de assinatura do CRX — NÃO versionar
+keys/extension.pem
+keys/*.pem

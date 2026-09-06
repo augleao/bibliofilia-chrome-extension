@@ -44,10 +44,21 @@
       <button id="disconnectBtn" class="btn btn--ghost" type="button">Desvincular extensão</button>
     </section>
 
+    <section id="updateCard" class="popup__card" hidden>
+      <div class="popup__row">
+        <span class="popup__label">Atualização</span>
+        <span id="versionBadge" class="badge badge--off">—</span>
+      </div>
+      <p id="updateLine" class="popup__muted"></p>
+      <a id="updateLink" class="btn btn--primary" href="#" target="_blank" rel="noopener" hidden>Baixar nova versão</a>
+    </section>
+
     <footer class="popup__footer">
+      <span id="localVersionLine">Versão local…</span>
       Nas páginas de edição de OS do Cartosoft, use o botão flutuante <strong>B</strong> para importar.
     </footer>
   </main>
+  <script src="../shared/config.js"></script>
   <script type="module" src="popup.js"></script>
 </body>
 </html>
