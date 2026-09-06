@@ -1,10 +1,11 @@
 {
   "name": "bibliofilia-chrome-extension",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "private": true,
   "description": "Extensão Chrome do Bibliofilia para Ordens de Serviço do CartosoftWeb",
   "scripts": {
     "pack": "bash scripts/pack.sh",
+    "generate-key": "bash scripts/generate-key.sh",
     "test": "node --test tests/*.test.js"
   }
 }

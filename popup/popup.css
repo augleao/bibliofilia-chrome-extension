@@ -75,6 +75,14 @@ body {
 }
 .badge--on { background: rgba(47, 158, 108, 0.25); color: #86efac; }
 .badge--off { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+.badge--warn { background: rgba(245, 158, 11, 0.28); color: #fde68a; }
+
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
 
 .btn {
   border: 0;

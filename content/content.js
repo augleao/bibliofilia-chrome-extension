@@ -6,9 +6,15 @@
   const Actions = window.BibliofiliaActions;
   const Fab = window.BibliofiliaFab;
 
-  if (!Url || !Actions || !Fab) {
-    console.warn('[Bibliofilia] content deps missing');
+  if (!Fab) {
+    console.warn('[Bibliofilia] FAB module missing — content scripts fora de ordem?');
     return;
+  }
+  if (!Url || !Actions) {
+    console.warn('[Bibliofilia] deps parciais', {
+      hasUrl: Boolean(Url),
+      hasActions: Boolean(Actions),
+    });
   }
 
   let toastTimer = null;
@@ -20,9 +26,18 @@
   }
 
   async function handleImport({ setStatus }) {
-    const codigoOs = Url.extractCodigoOsFromUrl(location.href);
+    const codigoOs = Url?.extractCodigoOsFromUrl?.(location.href) || null;
     if (!codigoOs) {
-      showToast(setStatus, 'error', 'Abra a tela de edição de uma OS para importar.');
+      showToast(
+        setStatus,
+        'error',
+        'Abra a tela de edição de uma OS (/ordem-de-servico/editar/…).',
+      );
+      return;
+    }
+
+    if (!Actions?.runAction) {
+      showToast(setStatus, 'error', 'Ação de importação indisponível. Recarregue a extensão.');
       return;
     }
 
@@ -39,13 +54,36 @@
     }
   }
 
-  function mount() {
-    Fab.createFab({ onClick: handleImport });
+  /** Evita dezenas de FABs em iframes irrelevantes; monta no top ou no frame da OS. */
+  function shouldMountInThisFrame() {
+    if (window === window.top) return true;
+    return Boolean(Url?.isOsEditPage?.(location.href));
   }
 
-  // SPA-friendly: Cartosoft usa Angular/React — observar mudanças de URL
+  function mount() {
+    if (!shouldMountInThisFrame()) return;
+    try {
+      Fab.createFab({ onClick: handleImport });
+    } catch (err) {
+      console.error('[Bibliofilia] falha ao montar FAB', err);
+    }
+  }
+
+  function scheduleMount() {
+    mount();
+    // Cartosoft (Angular) pode montar o body depois do document_idle
+    setTimeout(mount, 300);
+    setTimeout(mount, 1000);
+    setTimeout(mount, 2500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
+  } else {
+    scheduleMount();
+  }
+
   let lastHref = location.href;
-  mount();
 
   const pushState = history.pushState;
   history.pushState = function (...args) {
@@ -67,15 +105,20 @@
     }
   });
 
-  // Fallback poll for hash/router changes without history API hooks
   setInterval(() => {
     if (location.href !== lastHref) {
       lastHref = location.href;
       mount();
     }
-  }, 1500);
+    if (shouldMountInThisFrame() && !document.getElementById('bibliofilia-fab-host')) {
+      mount();
+    }
+  }, 2000);
 
   console.log('[Bibliofilia] content script ativo', {
-    codigoOs: Url.extractCodigoOsFromUrl(location.href),
+    href: location.href,
+    codigoOs: Url?.extractCodigoOsFromUrl?.(location.href) || null,
+    frame: window === window.top ? 'top' : 'iframe',
+    willMount: shouldMountInThisFrame(),
   });
 })();

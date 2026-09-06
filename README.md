@@ -93,3 +93,20 @@ Após editar arquivos, em `chrome://extensions` use **Atualizar** na extensão.
 Problemas de vínculo ou importação: verificar ambiente da API no popup,
 código de pairing não expirado, e se o backend consegue sessão Cartosoft
 (CNS / auto-connect da serventia).
+
+## Empacote e auto-update
+
+```bash
+# gera keys/extension.pem + identity (uma vez)
+bash scripts/generate-key.sh
+
+# gera dist/*.zip e dist/*.crx com key + update_url
+bash scripts/pack.sh
+```
+
+- `update_url` aponta para `https://backend-goby.onrender.com/api/chrome-extension/updates.xml`
+- Instalações **unpacked** não atualizam sozinhas; use o `.crx` ou política
+  `ExtensionInstallForcelist` = `<extensionId>;<updateUrl>`
+- O popup da extensão compara a versão local com `GET /chrome-extension/meta`
+
+Nunca versionar `keys/extension.pem`. O arquivo `keys/extension-identity.json` (ID + chave pública) pode ser commitado.
