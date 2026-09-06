@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bibliofilia — Cartosoft OS",
   "description": "Importa Ordens de Serviço do CartosoftWeb para o Bibliofilia. Arquitetura extensível para protocolo e recibo.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "action": {
     "default_title": "Bibliofilia",
     "default_popup": "popup/popup.html",
@@ -39,13 +39,19 @@
         "content/fab.js",
         "content/content.js"
       ],
-      "css": ["content/content.css"],
+      "css": [
+        "content/content.css"
+      ],
       "run_at": "document_idle",
       "all_frames": true,
       "match_about_blank": true
     }
   ],
-  "permissions": ["storage", "tabs", "scripting"],
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting"
+  ],
   "host_permissions": [
     "https://cartosoftweb.recivil.com.br/*",
     "https://*.cartosoftweb.recivil.com.br/*",

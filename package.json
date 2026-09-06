@@ -1,6 +1,6 @@
 {
   "name": "bibliofilia-chrome-extension",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Extensão Chrome do Bibliofilia para Ordens de Serviço do CartosoftWeb",
   "scripts": {
