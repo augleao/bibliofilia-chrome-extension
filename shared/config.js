@@ -8,16 +8,19 @@
       id: 'prod',
       label: 'Produção',
       apiBase: 'https://backend-goby.onrender.com/api',
+      frontendBase: 'https://www.bibliofilia.com.br',
     },
     dev: {
       id: 'dev',
       label: 'Desenvolvimento',
       apiBase: 'https://backend-dev-ypsu.onrender.com/api',
+      frontendBase: 'https://frontend-dev-e7yt.onrender.com',
     },
     local: {
       id: 'local',
       label: 'Local',
       apiBase: 'http://localhost:3001/api',
+      frontendBase: 'http://localhost:3000',
     },
   };
 
@@ -48,6 +51,11 @@
     return getEnvironment(envId).apiBase;
   }
 
+  async function getFrontendBase() {
+    const envId = await getStoredEnvId();
+    return getEnvironment(envId).frontendBase;
+  }
+
   async function setApiEnv(envId) {
     if (!ENVIRONMENTS[envId]) throw new Error('Ambiente inválido');
     await chrome.storage.local.set({ [STORAGE_KEYS.apiEnv]: envId });
@@ -61,6 +69,7 @@
     getEnvironment,
     getStoredEnvId,
     getApiBase,
+    getFrontendBase,
     setApiEnv,
   };
 })(typeof self !== 'undefined' ? self : window);

@@ -8,7 +8,14 @@ import {
   getAuthStatus,
   importOsByCodigo,
 } from './api.js';
-import { setApiEnv } from './config-sw.js';
+import { setApiEnv, getFrontendBase } from './config-sw.js';
+
+function buildReciboUrl(frontendBase, protocolo, formato) {
+  const base = String(frontendBase || '').replace(/\/$/, '');
+  const proto = encodeURIComponent(String(protocolo || '').trim());
+  const fmt = String(formato || 'a4').toLowerCase() === 'termico' ? 'termico' : 'a4';
+  return `${base}/#/recibo/${proto}?formato=${fmt}`;
+}
 
 const ACTION_HANDLERS = {
   async importOs(payload = {}) {
@@ -19,11 +26,33 @@ const ACTION_HANDLERS = {
     try {
       const data = await importOsByCodigo(codigoOs);
       const summary = data?.summary || {};
+      const protocolo = String(
+        summary?.pedido?.protocolo
+        || summary?.protocolo
+        || data?.protocolo
+        || codigoOs
+      ).trim();
+      const formato = String(data?.protocoloFormato || summary?.protocoloFormato || 'a4').toLowerCase();
+      const frontendBase = await getFrontendBase();
+      const reciboUrl = buildReciboUrl(frontendBase, protocolo, formato);
+
+      if (payload.openProtocol !== false && protocolo) {
+        try {
+          await chrome.tabs.create({ url: reciboUrl, active: true });
+        } catch (err) {
+          console.warn('[Bibliofilia] não foi possível abrir o protocolo:', err?.message || err);
+        }
+      }
+
       return {
         ok: true,
         codigoOs,
+        protocolo,
+        protocoloFormato: formato,
+        reciboUrl,
         message: `OS ${codigoOs} importada` +
-          (summary.pedidosCreated ? ' (pedido criado)' : summary.pedidosLinked ? ' (já vinculada)' : ''),
+          (summary.pedidosCreated ? ' e protocolo gerado' : summary.pedidosLinked ? ' (já vinculada)' : '') +
+          ` · abrindo recibo`,
         summary,
         data,
       };
@@ -36,12 +65,11 @@ const ACTION_HANDLERS = {
       };
     }
   },
-  // Slots futuros
   async generateProtocol() {
-    return { ok: false, error: 'Gerar protocolo: em breve' };
+    return { ok: false, error: 'Use o botão Prot. na OS para importar e abrir o protocolo.' };
   },
   async printReceipt() {
-    return { ok: false, error: 'Imprimir recibo: em breve' };
+    return { ok: false, error: 'Abra o protocolo gerado para imprimir o recibo.' };
   },
 };
 

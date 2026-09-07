@@ -7,16 +7,19 @@ export const ENVIRONMENTS = {
     id: 'prod',
     label: 'Produção',
     apiBase: 'https://backend-goby.onrender.com/api',
+    frontendBase: 'https://www.bibliofilia.com.br',
   },
   dev: {
     id: 'dev',
     label: 'Desenvolvimento',
     apiBase: 'https://backend-dev-ypsu.onrender.com/api',
+    frontendBase: 'https://frontend-dev-e7yt.onrender.com',
   },
   local: {
     id: 'local',
     label: 'Local',
     apiBase: 'http://localhost:3001/api',
+    frontendBase: 'http://localhost:3000',
   },
 };
 
@@ -43,6 +46,11 @@ export async function getStoredEnvId() {
 export async function getApiBase() {
   const envId = await getStoredEnvId();
   return getEnvironment(envId).apiBase;
+}
+
+export async function getFrontendBase() {
+  const envId = await getStoredEnvId();
+  return getEnvironment(envId).frontendBase;
 }
 
 export async function setApiEnv(envId) {
