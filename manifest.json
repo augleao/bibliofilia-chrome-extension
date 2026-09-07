@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Bibliofilia — Cartosoft OS",
-  "description": "Importa Ordens de Serviço do CartosoftWeb para o Bibliofilia. Arquitetura extensível para protocolo e recibo.",
-  "version": "1.0.4",
+  "description": "Importa Ordens de Serviço e pagamentos de caixa do CartosoftWeb para o Bibliofilia.",
+  "version": "1.0.5",
   "action": {
     "default_title": "Bibliofilia",
     "default_popup": "popup/popup.html",
@@ -36,7 +36,9 @@
         "shared/url.js",
         "actions/registry.js",
         "actions/importOs.js",
+        "actions/importPagamentoCaixa.js",
         "content/fab.js",
+        "content/caixaHook.js",
         "content/content.js"
       ],
       "css": [
@@ -45,6 +47,19 @@
       "run_at": "document_idle",
       "all_frames": true,
       "match_about_blank": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/caixaHook.page.js"
+      ],
+      "matches": [
+        "https://cartosoftweb.recivil.com.br/*",
+        "https://*.cartosoftweb.recivil.com.br/*",
+        "https://*.recivil.com.br/*",
+        "http://*.recivil.com.br/*"
+      ]
     }
   ],
   "permissions": [

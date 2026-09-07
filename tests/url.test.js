@@ -15,6 +15,13 @@ describe('extractCodigoOsFromUrl', () => {
     assert.equal(Url.extractCodigoOsFromUrl(href), 'AUR2600013230');
   });
 
+  it('extracts OS code from cadastrar-caixa returnTo', () => {
+    const href = 'https://cartosoftweb.recivil.com.br/cartosoft-web/cadastrar-caixa/66390?returnTo=%2Fordem-de-servico%2Feditar%2FNAC2600013231';
+    assert.equal(Url.extractCodigoOsFromUrl(href), 'NAC2600013231');
+    assert.equal(Url.isCaixaPage(href), true);
+    assert.equal(Url.extractCaixaIdFromUrl(href), '66390');
+  });
+
   it('returns null outside edit pages', () => {
     assert.equal(
       Url.extractCodigoOsFromUrl('https://cartosoftweb.recivil.com.br/cartosoft-web/registros/ordem-de-servico/pesquisar'),

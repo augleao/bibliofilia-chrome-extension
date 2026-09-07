@@ -68,11 +68,21 @@
     return true;
   }
 
-  function createFab({ onClick, onStatus } = {}) {
+  function createFab({ onClick, onStatus, label = 'Prot.', title } = {}) {
     const existing = document.getElementById(HOST_ID);
     if (existing) {
       applyHostShellStyle(existing);
       ensureParent(existing);
+      if (existing._biblioBtn) {
+        existing._biblioBtn.textContent = label;
+        const tip = title
+          || (label === 'Pag.'
+            ? 'Importar pagamento do caixa para valores adiantados no Bibliofilia.'
+            : 'Importe a OS para o Bibliofilia e gere o protocolo do pedido.');
+        existing._biblioBtn.title = tip;
+        existing._biblioBtn.setAttribute('aria-label', tip);
+      }
+      if (typeof onClick === 'function') existing._biblioOnClick = onClick;
       return existing;
     }
 
@@ -136,12 +146,13 @@
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'fab';
-    btn.setAttribute(
-      'aria-label',
-      'Importe a OS para o Bibliofilia e gere o protocolo do pedido.',
-    );
-    btn.title = 'Importe a OS para o Bibliofilia e gere o protocolo do pedido.';
-    btn.textContent = 'Prot.';
+    const tip = title
+      || (label === 'Pag.'
+        ? 'Importar pagamento do caixa para valores adiantados no Bibliofilia.'
+        : 'Importe a OS para o Bibliofilia e gere o protocolo do pedido.');
+    btn.setAttribute('aria-label', tip);
+    btn.title = tip;
+    btn.textContent = label;
 
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -236,8 +247,9 @@
       }
       const rect = host.getBoundingClientRect();
       await savePosition({ left: rect.left, top: rect.top });
-      if (!moved && typeof onClick === 'function') {
-        onClick({ setStatus });
+      const clickHandler = host._biblioOnClick || onClick;
+      if (!moved && typeof clickHandler === 'function') {
+        clickHandler({ setStatus });
       }
     });
 
@@ -247,9 +259,12 @@
     });
 
     host.setStatus = setStatus;
+    host._biblioBtn = btn;
+    host._biblioOnClick = onClick;
     console.log('[Bibliofilia] FAB montado', {
       href: location.href,
       frame: window === window.top ? 'top' : 'iframe',
+      label,
     });
     return host;
   }

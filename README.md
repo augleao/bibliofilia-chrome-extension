@@ -5,15 +5,15 @@ diretamente no Bibliofilia, sem esperar o intervalo de importação por período
 
 Repositório privado / uso interno. Sem licença open-source.
 
-## O que faz (MVP)
+## O que faz
 
 - Detecta a página `…/ordem-de-servico/editar/{codigoOs}` no CartosoftWeb
-- Exibe um botão flutuante (FAB) arrastável
-- Ao clicar, importa **essa OS** no Bibliofilia via API (`import-by-codigo`)
+- Exibe um botão flutuante (FAB) **Prot.** — importa a OS e abre o protocolo
+- Na tela `…/cadastrar-caixa/{id}` (pagamento da OS), o FAB vira **Pag.**:
+  - intercepta o `POST /api-sistema-registro/caixa` após salvar
+  - importa os pagamentos para **valores adiantados** do pedido no Bibliofilia
+  - no modal de sucesso, oferece o botão **Importar Bibliofilia**
 - Vínculo por código de pairing gerado no Admin do Bibliofilia (Bearer token)
-
-Arquitetura pronta para plugar depois: `generateProtocol`, `printReceipt`
-(veja `actions/registry.js` e slots em `actions/importOs.js`).
 
 ## Instalação (TI / registradores)
 
@@ -53,9 +53,11 @@ O token fica em `chrome.storage.local` e as chamadas usam `Authorization: Bearer
 
 1. No CartosoftWeb, abra ou salve uma OS
    (`…/ordem-de-servico/editar/AUR2600013230`)
-2. Clique no FAB **B** (arraste para reposicionar; a posição é lembrada)
-3. Aguarde o feedback: loading → sucesso / erro
-4. A OS aparece na lista **OS do Cartosoft** do Bibliofilia
+2. Clique no FAB **Prot.** (arraste para reposicionar; a posição é lembrada)
+3. Aguarde o feedback: loading → sucesso / erro — o protocolo abre no Bibliofilia
+4. Na OS, abra **Cadastrar caixa**, registre o pagamento e salve
+5. A extensão captura o save e importa para **valores adiantados** do pedido
+   (FAB **Pag.** ou botão **Importar Bibliofilia** no modal de sucesso)
 
 ## Estrutura
 

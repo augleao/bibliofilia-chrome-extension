@@ -7,6 +7,7 @@ import {
   disconnect,
   getAuthStatus,
   importOsByCodigo,
+  importPagamentoCaixa,
 } from './api.js';
 import { setApiEnv, getFrontendBase } from './config-sw.js';
 
@@ -61,6 +62,46 @@ const ACTION_HANDLERS = {
         ok: false,
         codigoOs,
         error: err.message || 'Falha ao importar OS',
+        code: err.code || null,
+      };
+    }
+  },
+  async importPagamentoCaixa(payload = {}) {
+    const caixa = payload.caixa;
+    const codigoOs = String(
+      payload.codigoOs
+      || caixa?.protocoloSolicitacao
+      || ''
+    ).trim().toUpperCase();
+    if (!caixa || typeof caixa !== 'object') {
+      return { ok: false, error: 'Payload do caixa ausente.' };
+    }
+    try {
+      const data = await importPagamentoCaixa({ codigoOs, caixa });
+      const total = data?.valorAdiantado;
+      const totalLabel = total != null
+        ? Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        : null;
+      return {
+        ok: true,
+        codigoOs,
+        protocolo: data?.protocolo || codigoOs,
+        valorAdiantado: data?.valorAdiantado,
+        valorAdiantadoDetalhes: data?.valorAdiantadoDetalhes,
+        added: data?.added,
+        updated: data?.updated,
+        ensuredPedido: Boolean(data?.ensuredPedido),
+        message: `Pagamento sincronizado` +
+          (data?.protocolo ? ` · ${data.protocolo}` : '') +
+          (totalLabel != null ? ` · R$ ${totalLabel}` : '') +
+          (data?.ensuredPedido ? ' (OS importada)' : ''),
+        data,
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        codigoOs,
+        error: err.message || 'Falha ao importar pagamento do caixa',
         code: err.code || null,
       };
     }
