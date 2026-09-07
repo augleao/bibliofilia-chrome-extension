@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bibliofilia — Cartosoft OS",
   "description": "Importa Ordens de Serviço do CartosoftWeb para o Bibliofilia. Arquitetura extensível para protocolo e recibo.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "action": {
     "default_title": "Bibliofilia",
     "default_popup": "popup/popup.html",

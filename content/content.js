@@ -41,11 +41,16 @@
       return;
     }
 
-    showToast(setStatus, 'loading', `Importando ${codigoOs}…`, 60000);
+    showToast(setStatus, 'loading', `Importando ${codigoOs} e gerando protocolo…`, 60000);
     try {
-      const result = await Actions.runAction('importOs', { codigoOs, href: location.href });
+      const result = await Actions.runAction('importOs', { codigoOs, href: location.href, openProtocol: true });
       if (result?.ok) {
-        showToast(setStatus, 'success', result.message || `OS ${codigoOs} importada`);
+        const protocolo = result.protocolo || result.summary?.pedido?.protocolo || result.summary?.protocolo || codigoOs;
+        showToast(
+          setStatus,
+          'success',
+          result.message || `OS ${codigoOs} importada · protocolo ${protocolo}`,
+        );
       } else {
         showToast(setStatus, 'error', result?.error || 'Falha na importação');
       }

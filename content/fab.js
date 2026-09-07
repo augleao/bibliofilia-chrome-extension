@@ -34,6 +34,8 @@
     }
   }
 
+  const FAB_SIZE = 64;
+
   function applyHostShellStyle(host) {
     setImportant(host, {
       position: 'fixed',
@@ -42,8 +44,8 @@
       bottom: '24px',
       left: 'auto',
       top: 'auto',
-      width: '56px',
-      height: '56px',
+      width: `${FAB_SIZE}px`,
+      height: `${FAB_SIZE}px`,
       margin: '0',
       padding: '0',
       border: '0',
@@ -84,15 +86,15 @@
     style.textContent = `
       .wrap {
         position: relative;
-        width: 56px;
-        height: 56px;
+        width: ${FAB_SIZE}px;
+        height: ${FAB_SIZE}px;
         pointer-events: none;
         font-family: "Segoe UI", system-ui, sans-serif;
       }
       .fab {
         pointer-events: auto;
-        width: 56px;
-        height: 56px;
+        width: ${FAB_SIZE}px;
+        height: ${FAB_SIZE}px;
         border: 0;
         border-radius: 50%;
         background: linear-gradient(145deg, #0f3d2e 0%, #1a6b4a 55%, #0b2a1f 100%);
@@ -101,8 +103,9 @@
         cursor: grab;
         display: grid;
         place-items: center;
-        font-weight: 700;
-        font-size: 22px;
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.02em;
         line-height: 1;
         padding: 0;
       }
@@ -114,8 +117,8 @@
         position: absolute;
         right: 0;
         bottom: calc(100% + 10px);
-        min-width: 180px;
-        max-width: 260px;
+        min-width: 200px;
+        max-width: 280px;
         padding: 8px 12px;
         border-radius: 8px;
         background: rgba(15, 23, 42, 0.92);
@@ -133,9 +136,12 @@
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'fab';
-    btn.setAttribute('aria-label', 'Bibliofilia — Importar OS');
-    btn.title = 'Importar OS no Bibliofilia';
-    btn.textContent = 'B';
+    btn.setAttribute(
+      'aria-label',
+      'Importe a OS para o Bibliofilia e gere o protocolo do pedido.',
+    );
+    btn.title = 'Importe a OS para o Bibliofilia e gere o protocolo do pedido.';
+    btn.textContent = 'Prot.';
 
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -176,8 +182,8 @@
 
     function applyPosition(pos) {
       const margin = 12;
-      const w = 56;
-      const h = 56;
+      const w = FAB_SIZE;
+      const h = FAB_SIZE;
       const left = clamp(Number(pos.left) || 0, margin, window.innerWidth - w - margin);
       const top = clamp(Number(pos.top) || 0, margin, window.innerHeight - h - margin);
       setImportant(host, {

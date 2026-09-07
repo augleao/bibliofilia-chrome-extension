@@ -21,7 +21,10 @@
       const response = await chrome.runtime.sendMessage({
         type: MessageType.RUN_ACTION,
         actionId: 'importOs',
-        payload: { codigoOs },
+        payload: {
+          codigoOs,
+          openProtocol: context.openProtocol !== false,
+        },
       });
       return response || { ok: false, error: 'Sem resposta do background.' };
     }
@@ -32,26 +35,25 @@
   if (root.BibliofiliaActions) {
     root.BibliofiliaActions.registerAction({
       id: 'importOs',
-      label: 'Importar OS',
-      description: 'Importa a Ordem de Serviço aberta no Cartosoft para o Bibliofilia',
+      label: 'Importar OS e gerar protocolo',
+      description: 'Importa a OS do Cartosoft e abre o protocolo do pedido no Bibliofilia',
       available: true,
       run: runImportOs,
     });
 
-    // Slots futuros (ainda indisponíveis)
     root.BibliofiliaActions.registerAction({
       id: 'generateProtocol',
       label: 'Gerar protocolo',
-      description: 'Gera protocolo no Bibliofilia (em breve)',
-      available: false,
-      run: async () => ({ ok: false, error: 'Em breve' }),
+      description: 'Incluído na ação Prot. (importar + abrir recibo)',
+      available: true,
+      run: runImportOs,
     });
     root.BibliofiliaActions.registerAction({
       id: 'printReceipt',
       label: 'Imprimir recibo',
-      description: 'Imprime recibo da OS (em breve)',
+      description: 'Abra o protocolo gerado para imprimir',
       available: false,
-      run: async () => ({ ok: false, error: 'Em breve' }),
+      run: async () => ({ ok: false, error: 'Abra o protocolo gerado para imprimir o recibo.' }),
     });
   }
 
