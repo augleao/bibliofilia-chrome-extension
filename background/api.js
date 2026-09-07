@@ -118,3 +118,19 @@ export async function importOsByCodigo(codigoOs) {
   }
   return data;
 }
+
+export async function importPagamentoCaixa({ codigoOs, caixa }) {
+  const data = await apiFetch('/cartosoft-integration/ordens-servico/import-pagamento-caixa', {
+    method: 'POST',
+    body: { codigoOs, caixa },
+  });
+  await chrome.storage.local.set({
+    [STORAGE_KEYS.lastSyncAt]: new Date().toISOString(),
+  });
+  try {
+    await apiFetch('/chrome-extension/sync-heartbeat', { method: 'POST', body: {} });
+  } catch (_) {
+    // optional
+  }
+  return data;
+}
